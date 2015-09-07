@@ -1,0 +1,11 @@
+<Template name="transcludePivot">
+  <h4>Transcludes</h4>
+  <div class="sidebar-module pre-scrollable" style="border: 1px solid #e1e1e8;">
+    {{#each docP}}
+      <ol class="list-unstyled">
+        <!-- /topic/ is a punt -->
+        <li><a href="/topic/{{locator}}"><img src="{{icon}}">&nbsp;{{label}}</a></li>
+      </ol>
+    {{/each}}
+  </div>
+</template>

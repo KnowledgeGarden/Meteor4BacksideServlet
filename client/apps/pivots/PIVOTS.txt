@@ -1,0 +1,45 @@
+A simple User Topic with one tag pivot looks like this:
+
+{
+    "crtr": "SystemUser",
+    "pvL": [
+        "{\"relationType\":\"UserBookmarkRelationType\",\"documentLocator\":\"9d62d615-3f76-4ddf-b935-18d5b3f056b6\",\"relationLocator\":\"saraUserBookmarkRelationType9d62d615-3f76-4ddf-b935-18d5b3f056b6\",\"documentType\":\"BookmarkNodeType\",\"relationLabel\":\"UserBookmarkRelationType\",\"documentSmallIcon\":\"\\/images\\/bookmark_sm.png\"}",
+        "{\"relationType\":\"TagUserRelationType\",\"documentLocator\":\"sara_s_first_tag_TAG\",\"relationLocator\":\"sara_s_first_tag_TAGTagUserRelationTypesara\",\"documentType\":\"TagNodeType\",\"relationLabel\":\"TagUserRelationType\",\"documentSmallIcon\":\"\\/images\\/tag_sm.png\"}"
+    ],
+    "_ver": "1441663520553",
+    "lEdDt": "2015-09-07T15:05:20-07:00",
+    "label": [
+        "Sara Sixpack"
+    ],
+    "inOf": "UserType",
+    "crDt": "2015-09-07T15:04:32-07:00",
+    "trCl": [
+        "UserType"
+    ],
+    "lox": "sara",
+    "sIco": "/images/person_sm.png",
+    "isPrv": "false",
+    "details": [
+        ""
+    ],
+    "lIco": "/images/person.png",
+    "_id": "sara"
+}
+
+Of interest is the "pvL" field.
+We must walk along that field looking for appropriate node types. For instance
+to show the tags of that user, walk the list till we see
+TagUserRelationType
+at which point, we want:
+documentLocator and documentSmallIcon
+
+To pull that user's document out for the Documents pivot,
+we watch for
+UserBookmarkRelationType
+
+NOTE: this area of BacksideServlet development is still a bit messy. There
+are several types of pivot relations for this.
+TODO: cleanup the BacksideServlet pivot relations
+
+For pivots to work, each app needs to feed some stuff to Session such that
+our pivot.js code can pull down the necessary objects and paint data
