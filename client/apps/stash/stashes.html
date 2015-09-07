@@ -1,0 +1,21 @@
+<Template name="stashes">
+  <div id="wrap">
+
+    <div class="col-xs-8 col-sm-8">
+      <h2>My Stashed Comments</h2>
+      {{#with stashes}}
+      <ol>
+        {{#each cargo}}
+          <li><h4>URL: {{url}}</h4>
+            {{#each comment}}
+             <li>{{comment}}</li>
+            {{/each}}
+          </li>
+        {{/each}}
+      </ol>
+      {{/with}}
+    </div>
+
+  </div>
+  {{> footer}}
+</Template>

@@ -1,0 +1,21 @@
+<!-- inspired by Meteor -->
+<template name="simpletopics">
+  <br/>
+  <div class="col-sm-12">
+  <form name="topicLocator" class="form">
+    <div class="form-group {{errorClass 'body'}}">
+      <div class="controls">
+          <label for="body">Enter the <i>Locator</i> for a Topic</label>
+          <input type="text" name="body" id="body" class="form-control" />
+          <span class="help-block">{{errorMessage 'body'}}</span>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+  <hr>
+  <h2>The Topic</h2>
+  <div class="title">
+    <span>{{theTopic}}</span>
+  </div>
+</div>
+</template>

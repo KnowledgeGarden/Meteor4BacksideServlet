@@ -1,0 +1,21 @@
+<Template name="topicmap">
+  <div class="col-xs-8">
+    <h2>TopicMap</h2>
+    {{#if isAuthenticated}}
+    <table class='table'>
+      <tr>
+        <td>
+          <form name="createSubclassTopic" class="createSubclassTopic">
+            <button type='submit'  class="btn btn-primary btn-sm">Create New Subclass Topic</button>
+          </form>
+        </td>
+        <td>
+          <form name="createInstanceTopic" class="createInstanceTopic">
+            <button type='submit'  class="btn btn-primary btn-sm">Create New Instance Topic</button>
+          </form>
+        </td>
+      </tr>
+    </table>
+    {{/if}}
+  </div>
+</Template>

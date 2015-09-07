@@ -1,0 +1,59 @@
+<Template name="instanceTopicForm">
+  <div id="wrap">
+  <div class="col-sm-6 col-sm-offset-3">
+    <h2>Create an InstanceTopic</h2>
+    <b>Note: default language is 'en', and default images are cogwheel type</b><br/>
+    <form name="newTopic" class="newTopic">
+      <div class="form-group">
+          <label>Locator (Optional: Dangerous if locator already exists)</label>
+          <input type="text" class="form-control" name="locator">
+      </div>
+      <div class="form-group">
+          <label>Type Topic Locator (Required)</label>
+          <input type="text" class="form-control" name="typelocator">
+      </div>
+      <div class="form-group">
+          <label>Label (a name for this topic: Required)</label>
+          <input type="text" class="form-control" name="label">
+      </div>
+      <div class="form-group">
+          <label>Description (Optional)</label>
+          <!-- TODO: change to rich text editor -->
+          <textarea class="form-control" name="details"></textarea>
+      </div>      <!-- ToDO -->
+      <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+    </form>
+  </div>
+</div>
+{{> footer}}
+</Template>
+
+<Template name="subclassTopicForm">
+  <div id="wrap">
+  <div class="col-sm-6 col-sm-offset-3">
+    <h2>Create a Subclass Topic</h2>
+    <b>Note: default language is 'en', and default images are cogwheel type</b><br/>
+    <form name="newTopic" class="newTopic">
+      <div class="form-group">
+          <label>Locator (can be left blank)</label>
+          <input type="text" class="form-control" name="locator">
+      </div>
+      <div class="form-group">
+          <label>Superclass Topic Locator (Required)</label>
+          <input type="text" class="form-control" name="superlocator">
+      </div>
+      <div class="form-group">
+          <label>Label (a name for this topic)</label>
+          <input type="text" class="form-control" name="label">
+      </div>
+      <div class="form-group">
+          <label>Description</label>
+          <!-- TODO: change to rich text editor -->
+          <textarea class="form-control" name="details"></textarea>
+      </div>      <!-- ToDO -->
+      <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+    </form>
+  </div>
+</div>
+{{> footer}}
+</Template>

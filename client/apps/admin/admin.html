@@ -1,0 +1,65 @@
+
+<Template name="admin">
+  <div class="col-sm-6 col-sm-offset-3">
+    <h2>Admin</h2>
+<!--    <ui id="adminTabs" class="nav nav-tabs">
+      <li><a href='#invitetab'>Invitations</a></li>
+      <li><a href='#listuserstab'>List Users</a></li>
+    </ui> -->
+    <div class='tag-content'>
+      <div class='tab-pane-active' id='invitetab'>
+        <form name="addInvite" class="addInvite">
+            <div class="form-group">
+              <h3> Add Invitation</h3>
+              <label class="text">Email</label>
+              <input type="text" class="form-control" name="iEmail">
+              <button type="submit" class="btn btn-primary btn-sm">Add Invite</button>
+            </div>
+        </form>
+        <hr>
+        <form name="removeInvite" class="removeInvite">
+          <div class="form-group">
+            <h3> Delete Invitation</h3>
+            <label class="text">Email</label>
+            <input type="text" class="form-control" name="rEmail">
+            <button type="submit" class="btn btn-primary btn-sm">Delete Invite</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class='tab-pane' id='listuserstab'>
+      <form name="listUsers" class="listUsers">
+        <div class="form-group">
+          <h3>List Users</h3>
+          <button type="submit" class="btn btn-primary btn-sm">List Users</button>
+        </div>
+      </form>
+    </div>
+    <div class='tab-pane' id='changeuserrole'>
+    <!--  <form name="changeRole" class="changeRole"> -->
+        <div class="form-group">
+          <h3>Change User's Role</h3>
+          <form name='fetchUser' class='fetchUser'>
+            <h4>Fetch User to Change</h4>
+            <label>Email</label>
+            <input type="text" class="form-control" name="uEmail">
+            <button type="submit" class="btn btn-primary btn-sm">Get User</button>
+          </form>
+          <form name="changeRole" class="changeRole">
+            <h4>Modify Role Settings</h4>
+            <label>Roles</label>
+            <input type="text" class="form-control" name="uRoles">
+            <button type="submit" class="btn btn-primary btn-sm">Get User</button>
+          </form>
+        </div>
+      <!--</form> -->
+    </div>
+      <form name="clearUsers" class="clearUsers">
+        <h4>Clear the Local User Database</h4>
+        <button type="submit" class="btn btn-primary btn-sm">Clear User Database</button>
+      </form>
+    <div class='tab-pane' id='changeuserrole'>
+    </div>
+
+  </div>
+</Template>

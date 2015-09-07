@@ -1,0 +1,29 @@
+<Template name="bookmark">
+  <div id="wrap">
+  {{#with myBookmark}}
+  <div class="col-xs-8 col-sm-8">
+    <h2>Bookmark View</h2>
+
+      <table class="table">
+        <tr>
+          <td><img src='/images/bookmark.png' ></td>
+          <td><h2>{{label}}</h2></td>
+        </tr>
+      </table>
+      <h4>URL: <a href='{{url}}'>{{url}}</a></h4>
+      <div class="body pre-scrollable span12" style="border: 1px solid #e1e1e8; resize:both;overflow: auto;">
+        {{details}}
+      </div>
+
+  </div>
+  <!-- sidebars -->
+  <div class="col-xs-4 col-sm-4">
+    <div class="taglist"><h4>Tags</h4></div>
+    <div class="userlist"></div>
+    <div class="doclist"><h4>Documents</h4></div>
+    <div class="transcludelist"><h4>Transcludes</h4></div>
+  </div> <!-- /col 4 -->
+  {{/with}}
+</div>
+{{> footer}}
+</Template>

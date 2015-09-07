@@ -1,0 +1,19 @@
+<Template name="stashForm">
+  <div id="wrap">
+    <div class="col-sm-6 col-sm-offset-3">
+      <h2>Create a Stashed Comment for this URL</h2>
+      <form name="stash" class="stash">
+        <div class="form-group">
+            <label>Page URL</label>
+            <input type="text" name="pageURL" value='{{pageURL}}' class="form-control">
+        </div>
+        <div class="form-group">
+            <label>Comment</label>
+            <textarea class="form-control" name="details"></textarea>
+        </div>      <!-- ToDO -->
+        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+      </form>
+    </div>
+  </div>
+  {{> footer}}
+</Template>

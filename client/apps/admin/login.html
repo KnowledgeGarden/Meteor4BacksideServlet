@@ -1,0 +1,27 @@
+<Template name="login">
+  <div class="col-sm-6 col-sm-offset-3">
+
+    <h1>Login</h1>
+    <form name="login" class="form">
+<!--      <div class="form-group {{errorClass 'email'}}"> -->
+
+        <div class="controls">
+            <label>Email</label>
+            <input type="text" class="form-control" name="email">
+  <!--      </div>
+        <div class="controls"> -->
+            <label>Password</label>
+            <input type="password" class="form-control" name="password">
+  <!--            <span class="help-block">{{errorMessage 'email'}}</span>
+      </div> -->
+      </div>
+
+      <button type='submit' class="btn btn-success btn-lg">Login</button>
+    </form>
+    <hr>
+
+    <p>Need an account? <a href="/register">Signup</a></p>
+    <p>Or go <a href="/">home</a>.</p>
+</div>
+
+</Template>

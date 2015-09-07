@@ -1,0 +1,11 @@
+<Template name="bookmarks">
+  <div id="wrap">
+  <div class="col-sm-12">
+    <h2>Bookmarks</h2>
+    {{#each bookmarks.list}}
+     <a href="/bookmark/{{lox}}">{{label}}</a><br/>
+    {{/each}}
+  </div>
+</div>
+{{> footer}}
+</Template>

@@ -1,0 +1,45 @@
+<Template name="tagForm">
+  <div id="wrap">
+  <div class="col-sm-6">
+      <form name='tagform' class='tagForm'>
+      <h2>Bookmark Form</h2>
+      <div class="form-group">
+          <label>Page Title</label>
+          <input type="text" name="pageTitle" value='{{pageTitle}}' class="form-control">
+      </div>
+      <!-- resource information -->
+      <div class="form-group">
+          <label>Page URL</label>
+          <input type="text" name="pageURL" value='{{pageURL}}' class="form-control">
+      </div>
+      <!-- tag text entry -->
+      <div class="form-group">
+          <label for="title" class="col-sm-2 control-label">Tag Label</label>
+          <div class="col-sm-4">
+              <input type="text" name="tag1" placeholder="Enter a tag label" class="form-control">
+          </div>
+      </div>
+      <div class="form-group">
+          <label for="title" class="col-sm-2 control-label">Tag Label</label>
+          <div class="col-sm-4">
+              <input type="text" name="tag2" placeholder="Enter a tag label" class="form-control">
+          </div>
+      </div>
+      <div class="form-group">
+          <label for="title" class="col-sm-2 control-label">Tag Label</label>
+          <div class="col-sm-4">
+              <input type="text" name="tag3" placeholder="Enter a tag label" class="form-control">
+          </div>
+      </div>
+      <div class="form-group">
+          <label for="title" class="col-sm-2 control-label">Tag Label</label>
+          <div class="col-sm-4">
+              <input type="text" name="tag4" placeholder="Enter a tag label" class="form-control">
+          </div>
+      </div>
+      <button ng-click="saveBookmark()" class="btn btn-success btn-lg">Save</button>
+    </form>
+  </div>
+</div>
+{{> footer}}
+</Template>
