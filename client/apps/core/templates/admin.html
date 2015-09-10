@@ -25,6 +25,20 @@
             <button type="submit" class="btn btn-primary btn-sm">Delete Invite</button>
           </div>
         </form>
+        <form name="listInvites" class="listInvites">
+          <div class="form-group">
+            <h3>List Invitations</h3>
+            <button type="submit" class="btn btn-primary btn-sm">List Invitations</button>
+          </div>
+        </form>
+        <table class="table table-striped table-bordered">
+          <tbody>
+            <tr><th>Email</th></tr>
+            {{#each inviteList}}
+              <tr><td>{{uEmail}}</td></tr>
+            {{/each}}
+          </tbody>
+        </table>
       </div>
     </div>
     <div class='tab-pane' id='listuserstab'>
@@ -34,6 +48,14 @@
           <button type="submit" class="btn btn-primary btn-sm">List Users</button>
         </div>
       </form>
+      <table class="table table-striped table-bordered">
+        <tbody>
+          <tr><th>Email</th><th>UserName</th><th>Roles</th></tr>
+          {{#each userList}}
+            <tr><td>{{uEmail}}</td><td>{{uName}}</td><td>{{uRole}}</td></tr>
+          {{/each}}
+        </tbody>
+      </table>
     </div>
     <div class='tab-pane' id='changeuserrole'>
     <!--  <form name="changeRole" class="changeRole"> -->
@@ -49,7 +71,7 @@
             <h4>Modify Role Settings</h4>
             <label>Roles</label>
             <input type="text" class="form-control" name="uRoles">
-            <button type="submit" class="btn btn-primary btn-sm">Get User</button>
+            <button type="submit" class="btn btn-primary btn-sm">Update Roles</button>
           </form>
         </div>
       <!--</form> -->

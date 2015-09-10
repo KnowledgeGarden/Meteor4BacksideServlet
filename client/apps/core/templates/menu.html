@@ -16,8 +16,7 @@
           <li class="dropdown" dropdown on-toggle="toggled(open)">
             <a href class="dropdown-toggle" data-toggle="dropdown">Applications <b class="caret"></b></a>
             <ul class="dropdown-menu">
-              <!-- TODO wrap admin in {{#if isAdmin}} -->
-              <li><a href="/admin">Admin</a></li>
+              {{#if isAdmin}}<li><a href="/admin">Admin</a></li>{{/if}}
               <li><a href="/bookmarks">Bookmarks</a></li>
               <li><a href="/tags">Tags</a></li>
               <li><a href="/topicmap">TopicMap</a></li>

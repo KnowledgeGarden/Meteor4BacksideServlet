@@ -22,6 +22,10 @@ Template.menu.helpers({
     var t = Session.get('isAuthenticated');
     return (t === 'T');
   },
+  isAdmin: function() {
+    var t = Session.get('isAdmin');
+    return (t === 'T');
+  },
 
   userLocator: function() {
     return Session.get('userLocator');

@@ -2,9 +2,11 @@
  * Session params:
  * isNotAuthenticated
  * isAuthenticated
+ * isAdmin
  * sToken
  * uEmail
  * userId
+ * ErrorMessage set in router
  */
 
 
@@ -26,9 +28,9 @@ function checkAdmin(userJSON) {
   console.log("CHECKADMIN "+JSON.stringify(userJSON));
   var creds = userJSON.uRole;
   if (creds && (creds.indexOf('rar') > -1)) {
-    Session.set('sToken', 'T');
+    Session.set('isAdmin', 'T');
   } else {
-    Session.set('sToken', null);
+    Session.set('isAdmin', 'F');
   }
 }
 
@@ -87,12 +89,12 @@ var wrappedNewInvite = Meteor.wrapAsync(newInvite);
 function deleteInvite(email, callback) {
   console.log("DeleteInvite "+email);
   Meteor.call('removeInvite', email, function(err, rslt){
-    console.log("NewInvite+ "+err+" "+rslt);
+    console.log("DeleteInvite+ "+err+" "+rslt);
     return callback(err, rslt);
   });
 }
 
-var wrappedDeleteInvite = Meteor.wrapAsync(newInvite);
+var wrappedDeleteInvite = Meteor.wrapAsync(deleteInvite);
 
 function getUser(email, callback) {
   console.log("GetUser "+email);
@@ -104,9 +106,9 @@ function getUser(email, callback) {
 
 var wrappedGetUser = Meteor.wrapAsync(getUser);
 
-function changeRoles(roles, callback) {
+function changeRoles(userId, roles, callback) {
   console.log("ChangeRoles "+roles);
-  Meteor.call('updateUserRole', roles, function(err, rslt){
+  Meteor.call('updateUserRole', userId, roles, function(err, rslt){
     console.log("ChangeRoles+ "+err+" "+rslt);
     return callback(err, rslt);
   });
@@ -115,7 +117,7 @@ function changeRoles(roles, callback) {
 var wrappedChangeRoles = Meteor.wrapAsync(changeRoles);
 
 function listUsers(callback) {
-  console.log("ListUsers "+roles);
+  console.log("ListUsers ");
   Meteor.call('listUsers', function(err, rslt){
     console.log("ListUsers+ "+err+" "+rslt);
     return callback(err, rslt);
@@ -124,7 +126,29 @@ function listUsers(callback) {
 
 var wrappedListUsers = Meteor.wrapAsync(listUsers);
 
+function listInvites(callback) {
+  Meteor.call('listInvites', function(err, rslt){
+    console.log("ListInvites+ "+err+" "+rslt);
+    //"cargo":["ja","jackpark@gmail.com"]}
+    var result = [];
+    if (rslt) {
+      var c = rslt.cargo,
+          struct,
+          len = c.length;
+      for (var i=0;i<len; i++) {
+        struct={};
+        struct.uEmail = c[i];
+        result.push(struct);
+      }
+    }
+
+    return callback(err, result);
+  });
+
+}
+var wrappedListInvites = Meteor.wrapAsync(listInvites);
 var undefined;
+
 
 Template.login.created = function() {
   Session.set('adminErrors', {});
@@ -144,21 +168,18 @@ Template.logout.helpers({
 
 Template.register.created = function() {
   Session.set('adminErrors', {});
+  Meteor.call('isInvitationOnly', function(err, rslt) {
+    if (rslt) {
+      Session.set('InviteOnly', 'T');
+    } else {
+      Session.set('InviteOnly', 'F');
+    }
+    console.log("Register "+Session.get('InviteOnly'));
+  });
+
 };
 
-//Template.landingPage.created = function() {
-//};
-
 Template.login.helpers({
-/*  errorMessage: function(field) {
-    console.log("ERRORMESSAGE "+field);
-    return Session.get('topicsErrors')[field];
-  },
-  errorClass: function (field) {
-    console.log("ERRORCLASS "+field);
-    return !!Session.get('topicSubmitErrors')[field] ? 'has-error' : '';
-  }
-*/
 });
 
 Template.register.helpers({
@@ -172,12 +193,10 @@ Template.register.helpers({
   },
 
   invitationOnly: function() {
-    Meteor.call('isInvitationOnly', function(err, resp) {
-      console.log("INV "+resp);
-      return resp;
-    });
+    return (Session.get('InviteOnly') === 'T');
   }
 });
+
 Template.register.events({
   'submit .validate': function(e, template) {
     e.preventDefault();
@@ -215,18 +234,19 @@ Template.register.events({
         homepage = $hmp.val(),
         latitude = $lat.val(),
         longitude = $lnt.val();
-    var errors = {};
+
     if (! email) {
-      errors.body = "Valid email required.";
-      return Session.set('adminErrors', errors);
+      return Meteor.call('showErrorMessage', 'Valid email required.' );
     }
+    if (! handle) {
+      return Meteor.call('showErrorMessage', 'Valid handle required' );
+    }
+
     if (! pwd) {
-      errors.body = "Valid password required.";
-      return Session.set('adminErrors', errors);
+      return Meteor.call('showErrorMessage', 'Valid password required' );
     }
     if (! fullname) {
-      errors.body = "Valid full name required.";
-      return Session.set('adminErrors', errors);
+      return Meteor.call('showErrorMessage', 'Valid full name required' );
     }
 
     console.log("Signing up "+email+" "+handle+" "+fullname);
@@ -240,7 +260,19 @@ Template.register.events({
       $avt.val('');
       $hmp.val('');
       $lat.val('');
-      Router.go('/');
+      if (!rslt) {
+        console.log('SUP0');
+        var s = '';
+        if (Session.get('InviteOnly') === 'T') {
+          s = ' Invitation required';
+        }
+        console.log("SUP1 "+s);
+        var msg = "Unable to process Registration."+s;
+        msg = encodeURIComponent(msg);
+        console.log("SUP2 "+msg);
+        return Meteor.call('showErrorMessage', msg);
+      }
+      return Router.go('/');
     });
   }
 });
@@ -312,6 +344,20 @@ Template.userprofile.helpers({
 //  if (window.location.hash)
 //    $('a[href="' + window.location.hash+'"]').tab('show');
 //}
+Template.admin.helpers( {
+  userList: function() {
+    var x = Session.get('UserListing');
+    //Session.set('UserListing', null); //One shot; don't leave it around
+    return x;
+  },
+
+  inviteList: function() {
+    var x = Session.get('InviteListing');
+    console.log("INVITATIONS "+JSON.stringify(x));
+    return x;
+  }
+
+});
 
 Template.admin.events({
 
@@ -320,7 +366,9 @@ Template.admin.events({
     console.log("AddInvite");
     var $emx = $(e.target).find('[name=iEmail]');
     var email = $emx.val();
+    //sanity checks
     if (email === '') {return;}
+    if (email.indexOf('@')<0) {return;}
     wrappedNewInvite(email, function(err, rslt) {
       console.log("DID INVITE "+email+" "+err+" "+rslt);
       $emx.val('');
@@ -338,13 +386,21 @@ Template.admin.events({
       $emx.val('');
     });
   },
+  'submit .listInvites': function(e, template) {
+    e.preventDefault();
+    console.log("ListUsrs");
+    wrappedListInvites(function(err, rslt) {
+      console.log("LISTING Invites "+JSON.stringify(rslt));
+      Session.set('InviteListing', rslt);
+    });
+  },
 
   'submit .listUsers': function(e, template) {
     e.preventDefault();
     console.log("ListUsrs");
     wrappedListUsers(function(err, rslt) {
-      console.log("LISTING USERS "+JSON.stringify.rslt);
-      //TODO
+      console.log("LISTING USERS "+JSON.stringify(rslt));
+      Session.set('UserListing', rslt.cargo);
     });
   },
 
@@ -357,9 +413,11 @@ Template.admin.events({
     wrappedGetUser(email, function(err, rslt) {
       console.log("FETCHUSR "+JSON.stringify(rslt));
       if (rslt) {
-        //TODO get .uRole
-
-        var roles = "test"; //TOODO
+        //{"rMsg":"ok","rToken":"",
+        //"cargo":{"uGeoloc":"|",uEmail":"joe@sixpack.com","uHomepage":"",
+        //"uName":"joe","uFullName":"Joe Sixpack","uRole":"rur","uAvatar":""}}"
+        Session.set('ModUser', rslt.cargo);
+        var roles = rslt.cargo.uRole;
         var $rls = $(document).find('[name=uRoles]');
         $rls.val(roles);
       }
@@ -368,13 +426,18 @@ Template.admin.events({
 
   'submit .changeRole': function(e, template) {
     e.preventDefault();
-    console.log("ChangeRole");
+
     var $rls = $(e.target).find('[name=uRoles]');
     var roles = $rls.val();
+    console.log("ChangeRole "+roles);
     if (roles === '') {return;}
-    wrappedChangeRoles(roles, function(err, rslt) {
+    var usr = Session.get('ModUser');
+    if (!usr) {return;}
+    wrappedChangeRoles(usr.uName, roles, function(err, rslt) {
       console.log("CHANGED ROLES");
-      //TODO ???
+      Session.set('ModUser', null);
+      $rls.val('');
+      $(document).find('[name=uEmail]').val('');
     });
   }
 

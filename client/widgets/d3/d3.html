@@ -1,0 +1,18 @@
+<Template name='vthings'>
+  <br/><br/>
+  <div id="wrap">
+    <input type="button" class="increment" value="+">
+    <input type="button" class="decrement" value="-">
+    <div>
+      <svg id="vthings" width="500" height="500">
+        {{#each vthings}}
+          {{> vthing}}
+        {{/each}}
+      </svg>
+    </div>
+  </div>
+</Template>
+
+<template name="vthing">
+{{circle}}
+</template>

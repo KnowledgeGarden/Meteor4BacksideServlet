@@ -78,6 +78,27 @@ function doCall(method, urx, jsonQuery, options, callback) {
 
 var wrappedCall = Async.wrap(doCall);
 
+function getSignupQuery(email, fullName, handle, password, avatar,
+                homepage, latitude, longitude) {
+  var verb = Meteor.call('NEW_USER'),
+      query = Meteor.call('getCoreQuery', verb, 'SystemUser', '', null);
+  query.uEmail = email;
+  query.uName = handle;
+  query.uFullName = fullName;
+  if (avatar === null) {
+    query.uAvatar = '';
+  } else {
+    query.uAvatar = avatar;
+  }
+  query.uPwd = btoa(password);
+  if (longitude === null) {
+    query.uGeoLoc = '';
+  } else {
+    query.uGeoloc = latitude + "|" + longitude;
+  }
+  query.uHomepage = ''; // TODO
+  return query;
+}
 Meteor.methods ({
   /**
    *Authenticate a user
@@ -151,28 +172,30 @@ Meteor.methods ({
     var options = {};
 
     if (!Meteor.call('isInvitationOnly')) {
-      verb = Meteor.call('NEW_USER');
-      query = Meteor.call('getCoreQuery', verb, 'SystemUser', '', null);
-      query.uEmail = email;
-      query.uName = handle;
-      query.uFullName = fullName;
-      if (avatar === null) {
-        query.uAvatar = '';
-      } else {
-        query.uAvatar = avatar;
-      }
-      query.uPwd = btoa(password);
-      if (longitude === null) {
-        query.uGeoLoc = '';
-      } else {
-        query.uGeoloc = latitude + "|" + longitude;
-      }
-      query.uHomepage = ''; // TODO
+      query = getSignupQuery(email, fullName, handle, password, avatar,
+              homepage, latitude, longitude);
       //query.uHomepage = encodeURI(homepage);
       console.log("SIGNUP "+JSON.stringify(query));
       return wrappedCall("POST",'user/', query, options);
     } else {
-      //first check to see if email is on invitation list
+      var urx = 'admin/',
+          verb = 'ExistsInvite';
+      query = Meteor.call('getCoreQuery', verb, "SystemUser", '', null),
+      query.uEmail = email;
+      var truth = wrappedCall('GET', urx, query, options);
+      console.log("SIGNUP INV "+JSON.stringify(truth));
+      //GOOD: {"rMsg":"ok","rToken":""}
+      //BAD: {"rMsg":"not found","rToken":""}
+      if (truth.rMsg === 'ok') {
+        query = getSignupQuery(email, fullName, handle, password, avatar,
+                homepage, latitude, longitude);
+        //query.uHomepage = encodeURI(homepage);
+        console.log("SIGNUP "+JSON.stringify(query));
+        return wrappedCall("POST",'user/', query, options);
+      } else {
+        return undefined;
+      }
+
     }
 
   },
@@ -202,6 +225,7 @@ Meteor.methods ({
         query = Meteor.call('getCoreQuery', verb, "SystemUser", '', null);
         query.uEmail = email;
         options = {};
+    console.log("USER.removeInvite "+JSON.stringify(query));
     return wrappedCall("POST", urx, query, options);
   },
 
@@ -223,7 +247,10 @@ Meteor.methods ({
         query.from = start;
         query.count = count;
         options = {};
-    return wrappedCall("GET", urx, query, options);
+    console.log("Users.ListUsers "+JSON.stringify(query));
+    var result = wrappedCall("GET", urx, query, options);
+    console.log("Users.listUsers+ "+JSON.stringify(result));
+    return result;
   },
 
   fetchUser: function(email) {
@@ -237,12 +264,15 @@ Meteor.methods ({
 
   /**
    * for admins only
+   * @param userId -- NOT the id of the logged in user; rather the user being updated
+   * @param jsonUserRole  a [] filled with roles
    */
-  updateUserRole: function(jsonUserRole) {
+  updateUserRole: function(userId, jsonUserRole) {
     var urx = 'admin/',
         verb = Meteor.call('UPDATE_ROLE'),
         query = Meteor.call('getCoreQuery', verb, "SystemUser", '', null);
         query.uRole = jsonUserRole;
+        query.uName = userId;
         options = {};
     return wrappedCall("POST", urx, query, options);
   },
