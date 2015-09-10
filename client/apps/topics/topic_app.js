@@ -55,6 +55,8 @@ Template.topic.created = function() {
   console.log("TopicView "+lox);
   wrappedClientGrabTopic(lox, "SystemUser", '', null, function(err, result) {
     console.log("TopicGot "+JSON.stringify(result));
+    //set that in Session for pivots
+    Session.set('SessionTopic', result);
   });
 }
 

@@ -53,6 +53,8 @@ Template.bookmark.created = function() {
   console.log("UserView "+lox);
   wrappedClientGrabTopic(lox, "SystemUser", '', null, function(err, result) {
     console.log("BookmarkGot "+JSON.stringify(result));
+    //set that in Session for pivots
+    Session.set('SessionTopic', result);
   });
 
 }

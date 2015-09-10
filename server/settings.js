@@ -12,7 +12,7 @@ Meteor.settings.backsideURL= "http://localhost:8080/"; //TODO CHANGE ME
 // If invitationOnly = 'T', a user cannot use the Register form unless
 // that user's email is in the invitation database.
 //////////////////////////////////
-Meteor.settings.invitationOnly= 'F'; // 'T' if true
+Meteor.settings.invitationOnly= 'T'; // 'T' if true 'F' if false
 //////////////////////////////////
 // Keeping Local Topics
 // Meteor works by sequestering objects in play in local collections.

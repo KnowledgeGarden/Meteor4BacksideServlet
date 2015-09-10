@@ -14,3 +14,5 @@ iron:router
 twbs:bootstrap
 autopublish
 u2622:persistent-session
+email
+d3js:d3

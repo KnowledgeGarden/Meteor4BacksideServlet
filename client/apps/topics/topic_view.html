@@ -1,4 +1,5 @@
 <Template name="topic">
+  <div id="wrap">
   {{#with myTopic}}
   <div class="col-xs-8 col-sm-8">
     <h2>Topic View</h2>
@@ -9,6 +10,9 @@
           <td><h2>{{label}}</h2></td>
         </tr>
       </table>
+      {{#if url}}
+        <h4>URL: <a href='{{url}}'>{{url}}</a></h4>
+      {{/if}}
       <div class="body pre-scrollable span12" style="border: 1px solid #e1e1e8; resize:both;overflow: auto;">
         {{details}}
       </div>
@@ -18,10 +22,12 @@
   <div class="col-xs-4 col-sm-4">
     {{> tagPivot}}
     {{> userPivot}}
-    {{> docPivot}}
+    <!--{{> docPivot}}-->
     {{> transcludePivot}}
-  <div class="transcludelist"><h4>Transcludes</h4></div>
-</div> <!-- /col 4 -->
+  </div>
+
 
   {{/with}}
+</div>
+{{> footer}}
 </Template>

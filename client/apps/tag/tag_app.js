@@ -116,6 +116,8 @@ Template.tag.created = function() {
   console.log("TagView "+lox);
   wrappedClientGrabTopic(lox, "SystemUser", '', null, function(err, result) {
     console.log("TagGot "+JSON.stringify(result));
+    //set that in Session for pivots
+    Session.set('SessionTopic', result);
   });
 
 }

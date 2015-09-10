@@ -2,6 +2,7 @@
  * Session variables:
  * usercursor -- current start for listing users
  * UserTopicId  set in router
+ * SessionTopic  set in various apps for pivot painting
  */
  var NUM_ITEMS = 50;
 
@@ -45,6 +46,8 @@ Template.userview.created = function() {
   console.log("UserView "+lox);
   wrappedClientGrabTopic(lox, "SystemUser", '', null, function(err, result) {
     console.log("UserGot "+JSON.stringify(result));
+    //set that in Session for pivots
+    Session.set('SessionTopic', result);
   });
 }
 Template.userview.helpers({

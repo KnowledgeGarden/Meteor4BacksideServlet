@@ -1,45 +1,78 @@
-A simple User Topic with one tag pivot looks like this:
+A simple User Topic with two tag pivots looks like this:
 
 {
     "crtr": "SystemUser",
     "pvL": [
-        "{\"relationType\":\"UserBookmarkRelationType\",\"documentLocator\":\"9d62d615-3f76-4ddf-b935-18d5b3f056b6\",\"relationLocator\":\"saraUserBookmarkRelationType9d62d615-3f76-4ddf-b935-18d5b3f056b6\",\"documentType\":\"BookmarkNodeType\",\"relationLabel\":\"UserBookmarkRelationType\",\"documentSmallIcon\":\"\\/images\\/bookmark_sm.png\"}",
-        "{\"relationType\":\"TagUserRelationType\",\"documentLocator\":\"sara_s_first_tag_TAG\",\"relationLocator\":\"sara_s_first_tag_TAGTagUserRelationTypesara\",\"documentType\":\"TagNodeType\",\"relationLabel\":\"TagUserRelationType\",\"documentSmallIcon\":\"\\/images\\/tag_sm.png\"}"
+        "{\"relationType\":\"UserBookmarkRelationType\",\"documentLocator\":\"3a15ffbd-3b2a-4054-b159-3597f02a3efa\",\"relationLocator\":\"joeUserBookmarkRelationType3a15ffbd-3b2a-4054-b159-3597f02a3efa\",\"documentLabel\":\"Astin - Student Development Theory\",\"documentType\":\"BookmarkNodeType\",\"relationLabel\":\"UserBookmarkRelationType\",\"documentSmallIcon\":\"\\/images\\/bookmark_sm.png\"}",
+        "{\"relationType\":\"TagUserRelationType\",\"documentLocator\":\"alexander_astin_TAG\",\"relationLocator\":\"alexander_astin_TAGTagUserRelationTypejoe\",\"documentLabel\":\"Alexander Astin\",\"documentType\":\"TagNodeType\",\"relationLabel\":\"TagUserRelationType\",\"documentSmallIcon\":\"\\/images\\/tag_sm.png\"}",
+        "{\"relationType\":\"TagUserRelationType\",\"documentLocator\":\"student_development_theory_TAG\",\"relationLocator\":\"student_development_theory_TAGTagUserRelationTypejoe\",\"documentLabel\":\"Student Development Theory\",\"documentType\":\"TagNodeType\",\"relationLabel\":\"TagUserRelationType\",\"documentSmallIcon\":\"\\/images\\/tag_sm.png\"}",
+        "{\"relationType\":\"UserBookmarkRelationType\",\"documentLocator\":\"1f838a6a-1fb0-499c-9fb1-967c87bc54f9\",\"relationLocator\":\"joeUserBookmarkRelationType1f838a6a-1fb0-499c-9fb1-967c87bc54f9\",\"documentLabel\":\"How can I use if condition on the meteor template? - Stack Overflow\",\"documentType\":\"BookmarkNodeType\",\"relationLabel\":\"UserBookmarkRelationType\",\"documentSmallIcon\":\"\\/images\\/bookmark_sm.png\"}",
+        "{\"relationType\":\"TagUserRelationType\",\"documentLocator\":\"stack_overflow_TAG\",\"relationLocator\":\"stack_overflow_TAGTagUserRelationTypejoe\",\"documentLabel\":\"Stack Overflow\",\"documentType\":\"TagNodeType\",\"relationLabel\":\"TagUserRelationType\",\"documentSmallIcon\":\"\\/images\\/tag_sm.png\"}",
+        "{\"relationType\":\"TagUserRelationType\",\"documentLocator\":\"meteor_templates_TAG\",\"relationLocator\":\"meteor_templates_TAGTagUserRelationTypejoe\",\"documentLabel\":\"Meteor templates\",\"documentType\":\"TagNodeType\",\"relationLabel\":\"TagUserRelationType\",\"documentSmallIcon\":\"\\/images\\/tag_sm.png\"}"
     ],
-    "_ver": "1441663520553",
-    "lEdDt": "2015-09-07T15:05:20-07:00",
+    "_ver": "1441728396838",
+    "lEdDt": "2015-09-08T09:06:36-07:00",
     "label": [
-        "Sara Sixpack"
+        "Joe Sixpack"
     ],
     "inOf": "UserType",
-    "crDt": "2015-09-07T15:04:32-07:00",
+    "crDt": "2015-09-08T07:40:48-07:00",
     "trCl": [
         "UserType"
     ],
-    "lox": "sara",
+    "lox": "joe",
     "sIco": "/images/person_sm.png",
     "isPrv": "false",
     "details": [
         ""
     ],
     "lIco": "/images/person.png",
-    "_id": "sara"
+    "_id": "joe"
 }
 
 Of interest is the "pvL" field.
+In the template, we say:
+{{#each tagP.pvL}}
+
+and in code, we say
+tagP: function() {
+  var x = Session.get('SessionTopic');
+  console.log('TagPivot '+x);
+  return x
+},
+
+NOTE that 'SessionTopic' os set when we fetch the topic, typically in the
+Template...created code. For example:
+
+Template.userview.created = function() {
+  var lox = Session.get('UserTopicId');
+  console.log("UserView "+lox);
+  wrappedClientGrabTopic(lox, "SystemUser", '', null, function(err, result) {
+    console.log("UserGot "+JSON.stringify(result));
+    //set that in Session for pivots
+    Session.set('SessionTopic', result);
+  });
+}
 We must walk along that field looking for appropriate node types. For instance
 to show the tags of that user, walk the list till we see
-TagUserRelationType
+documentType
+and ask if it is 'TagNodeType'
+
+In the template, we say:
+{{#if  isTag 'TagNodeType'}}
+
+and in code:
+
+isTag: function(name) {
+  console.log('TagPivotIsTag '+name);
+  return (name === 'TagNodeType');
+}
+
 at which point, we want:
 documentLocator and documentSmallIcon
 
-To pull that user's document out for the Documents pivot,
-we watch for
-UserBookmarkRelationType
-
-NOTE: this area of BacksideServlet development is still a bit messy. There
-are several types of pivot relations for this.
-TODO: cleanup the BacksideServlet pivot relations
+We can then paint the pivot with HTML like this:
+<li><a href="/tag/{{documentLocator}}"><img src="{{documentSmallIcon}}">&nbsp;{{documentLabel}}</a></li>
 
 For pivots to work, each app needs to feed some stuff to Session such that
 our pivot.js code can pull down the necessary objects and paint data

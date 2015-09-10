@@ -70,7 +70,8 @@ function doCall(method, urx, jsonQuery, options, callback) {
   console.log("DOCALL- "+method);
   var error,
       result;
-  var baseURL = Meteor.settings.backsideURL+urx+JSON.stringify(jsonQuery);
+  var baseURL = Meteor.settings.backsideURL+urx+
+          encodeURIComponent(JSON.stringify(jsonQuery));
   console.log("DOCALL1 "+baseURL);
   try {
     Meteor.http.call(method, baseURL, options, function(err, rslt) {

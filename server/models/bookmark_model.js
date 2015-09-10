@@ -24,8 +24,8 @@ Meteor.methods ({
       tagLabelArray.push(tag2);
     if (tag3 !== '')
       tagLabelArray.push(tag3);
-    if (tag3 !== '')
-      tagLabelArray.push(tag3);
+    if (tag4 !== '')
+      tagLabelArray.push(tag4);
 
     return wrappedCreateBookmark(pageURL, pageTitle, 'en', tagLabelArray,
           userId, userIP, sToken, function(err, rslt) {
