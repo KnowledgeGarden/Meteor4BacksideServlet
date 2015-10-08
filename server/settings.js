@@ -12,7 +12,7 @@ Meteor.settings.backsideURL= "http://localhost:8080/"; //TODO CHANGE ME
 // If invitationOnly = 'T', a user cannot use the Register form unless
 // that user's email is in the invitation database.
 //////////////////////////////////
-Meteor.settings.invitationOnly= 'T'; // 'T' if true 'F' if false
+Meteor.settings.invitationOnly= 'F'; // 'T' if true 'F' if false
 //////////////////////////////////
 // Keeping Local Topics
 // Meteor works by sequestering objects in play in local collections.
@@ -22,7 +22,7 @@ Meteor.settings.invitationOnly= 'T'; // 'T' if true 'F' if false
 // from the local collection before they are fetched again.
 // If keepLocalTopics = 'T', local Topics will remain sequestered
 ///////////////////////////////////
-Meteor.settings.keepLocalTopics= 'F'; // 'T' if true
+//Meteor.settings.keepLocalTopics= 'F'; // 'T' if true
 
 //@see https://atmospherejs.com/u2622/persistent-session
 Meteor.settings.persistent_session = { "default_method": "persistent" };
@@ -42,8 +42,8 @@ Meteor.methods({
    * Return <code>true</code> if fetched topics are to remain
    * in the <code>Topics</code> collection
    */
-  isKeepLocalTopics: function() {
-    var f = Meteor.settings.keepLocalTopics;
-    return (f === "T");
-  }
+//  isKeepLocalTopics: function() {
+//    var f = Meteor.settings.keepLocalTopics;
+//    return (f === "T");
+//  }
 });

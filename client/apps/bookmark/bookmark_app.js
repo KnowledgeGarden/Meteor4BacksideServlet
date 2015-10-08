@@ -14,6 +14,7 @@ function clientGrabTopic(locator, userId, userIP, sToken, callback) {
     if (!error) {
       try {
         t = t.data.cargo;
+        Session.set('MyTopic', t);
       } catch (err) {console.log("DANG!"); t = res;}
     }
     console.log("TS99 "+error+" "+JSON.stringify(t));
@@ -35,15 +36,18 @@ Template.bookmarks.created = function() {
   Session.set('bookmarkcursor', 0);
   wrappedListBookmarks(0, NUM_ITEMS, function(err, rslt) {
     console.log("LIST_BOOKMARKS "+err+" "+ rslt);
-    if (rslt)
+    if (rslt) {
       console.log(JSON.stringify(rslt.cargo));
+      Session.set('ListBookmarks', rslt.cargo);
+    }
   });
 }
 
 Template.bookmarks.helpers({
   bookmarks: function() {
-    console.log("FiringListBookmarks ");
-      return Topics.findOne('ListBookmarks');
+    //console.log("FiringListBookmarks ");
+    //  return Topics.findOne('ListBookmarks');
+    return Session.get('ListBookmarks');
   }
 
 });
@@ -61,7 +65,8 @@ Template.bookmark.created = function() {
 
 Template.bookmark.helpers({
   myBookmark: function() {
-    return Topics.findOne(Session.get('BookmarkId'));
+    return Session.get('MyTopic');
+    //return Topics.findOne(Session.get('BookmarkId'));
   }
 
 });

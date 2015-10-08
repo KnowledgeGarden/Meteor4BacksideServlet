@@ -4,9 +4,6 @@
  * @oaran cakkbacj (error, result)
  */
 function doGet(locator, jsonQuery, callback) {
-  var x = {};
-  x._id = locator;
-  Topics.remove(x);
   console.log("DOGET- ");
   var error;
   var baseURL = Meteor.settings.backsideURL+"tm/"+JSON.stringify(jsonQuery);
@@ -19,15 +16,6 @@ function doGet(locator, jsonQuery, callback) {
     console.log("DOGET2 "+err+" "+rslt);
     if (rslt) {
       console.log("DOGET3 "+JSON.stringify(rslt));
-      // A user asked for this topic because it's not in
-      // the local Mongo collection--> put it there
-      if (!err) {
-        var x = rslt.data.cargo;
-        if (x) {
-          x._id = locator; // the Mongo Id so Mongo won't assign its own
-          Topics.insert(x);
-        }
-      }
     }
     return callback(err, rslt);
   });
@@ -38,34 +26,6 @@ function doGet(locator, jsonQuery, callback) {
   //  {"rMsg":"Not found","rToken":""}  withstatus code 404
 }
 
-function checkVerb(jsonQuery, result) {
-  var x = result.cargo,
-      verb = jsonQuery.localVerb,
-      y = {};
-  console.log('CheckVerb '+verb);
-  if (verb === 'ListUsers') {
-    y._id = 'ListUsers';
-    y.list = x;
-    console.log("InsertingUsers "+JSON.stringify(y));
-    Topics.insert(y);
-  } else if (verb === 'ListBookmarks') {
-    y._id = 'ListBookmarks';
-    y.list = x;
-    console.log("InsertingBookmarks "+JSON.stringify(y));
-    Topics.insert(y);
-  } else if (verb === 'ListTags') {
-    y._id = 'ListTags';
-    y.list = x;
-    console.log("InsertingTags "+JSON.stringify(y));
-    Topics.insert(y);
-  } else if (verb === 'ListConversations') {
-    y._id = 'ListConversations';
-    y.list = x;
-    console.log("InsertingConversations "+JSON.stringify(y));
-    Topics.insert(y);
-  }
-
-}
 function doCall(method, urx, jsonQuery, options, callback) {
   console.log("DOCALL- "+method);
   var error,
@@ -83,7 +43,6 @@ function doCall(method, urx, jsonQuery, options, callback) {
         rx = rslt.data;
         if (rx) {
           console.log("DOCALL3 "+jsonQuery.verb+"|"+JSON.stringify(rx));
-          checkVerb(jsonQuery, rx);
         }
       }
       return callback(err, rx);
@@ -129,7 +88,6 @@ function _grabTopic(locator, userId, userIP, sToken, callback) {
       } catch (err) {}
       error = _error;
       return callback (error, result);
-      //myFuture.ret(result);
       if (result) {
         console.log("FetchingTopic3 "+JSON.stringify(result));
       }
@@ -223,7 +181,6 @@ Meteor.methods ({
   },
 
   listUserTopics: function(start, count, userId, userIP, sToken) {
-    Topics.remove({_id:Meteor.call('LIST_USERS')});
     var urx = 'tm/',
         verb = Meteor.call('LIST_USERS'),
 
@@ -236,7 +193,14 @@ Meteor.methods ({
   },
 
   listInstanceTopics: function(typeLocator, start, count, userId, userIP, sToken) {
-    //TODO
+    var urx = 'tm/',
+        verb = Meteor.call('LIST_INSTANCE_TOPICS'),
+        query = Meteor.call('getCoreQuery', verb, userId, userIP, sToken),
+        options = {};
+        query.from = start.toString();
+        query.count = count.toString();
+        query.inOf = typeLocator;
+        return wrappedCall("GET", urx, query, options);
   },
 
   listSubclassTopics: function(superClassLocator, start, count, userId, userIP, sToken) {
@@ -264,6 +228,25 @@ Meteor.methods ({
         console.log("SubmitNewSubclassTopic+ "+JSON.stringify(query));
         return wrappedCall("POST", urx, query, options);
   },
+
+  /**
+   * Ask Backside to create a new ConversationMapNode
+   * @param jsonCargo must conform to cargo requirement of backside servlet
+   * @param userId
+   * @param userIP,
+   * @param sToken,
+   * @param callback -- will return the created node
+   */
+  submitNewConversationNode: function(jsonCargo, userId, userIP, sToken, callback) {
+    var urx = 'tm/',
+        verb = Meteor.call('NEW_CONVERSATION_NODE'),
+        query = Meteor.call('getCoreQuery', verb, userId, userIP, sToken),
+        options = {};
+        query.cargo = jsonTopic;
+        console.log("NewConversationNode+ "+JSON.stringify(query));
+        return wrappedCall("POST", urx, query, options);
+  },
+
   ///////////////////////////////////////////////
   // Below, we have app-specific index fetches
   // We use the concept of "localVerb" because the generalized
@@ -274,7 +257,6 @@ Meteor.methods ({
   ////////////////////////////////////////////////
   listBookmarkTopics: function(start, count, userId, userIP, sToken) {
     console.log("ServerListBookmarkTopics-");
-    Topics.remove({_id:'ListBookmarks'});
     console.log("ServerListBookmarkTopics-1");
     var urx = 'tm/',
         verb = 'ListInstances', //' Meteor.call('LIST_INSTANCE_TOPICS'),
@@ -289,7 +271,6 @@ Meteor.methods ({
   },
 
   listTagTopics: function(start, count, userId, userIP, sToken) {
-    Topics.remove({_id:'ListTags'});
     var urx = 'tm/',
         verb = 'ListInstances', //' Meteor.call('LIST_INSTANCE_TOPICS'),
         query = Meteor.call('getCoreQuery', verb, userId, userIP, sToken);

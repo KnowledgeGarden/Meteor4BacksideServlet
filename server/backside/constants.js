@@ -9,6 +9,7 @@ Meteor.methods({
  REMOVE_TOPIC:          function() {return "RemTopic"}, //topicmap
  NEW_INSTANCE_TOPIC:    function() {return "NewInstance"}, //topicmap
  NEW_SUBCLASS_TOPIC:    function() {return "NewSub"}, //topicmap
+ NEW_CONVERSATION_NODE: function() {return "NewConvNode"},
  NEW_USER:              function() {return "NewUser"}, //userapp
  LIST_INSTANCE_TOPICS:  function() {return "ListInstances"}, //topicmap
  LIST_SUBCLASS_TOPICS:  function() {return "ListSubclasses"}, //topicmap
@@ -41,12 +42,16 @@ Meteor.methods({
  TAG_NAMES_PROP:        function() {return "TagNames"},  //takes an array [name, name, name]
  URL_PROP:              function() {return "url"},
  LIST_PROPERTY:         function() {return "ListProperty"}, //topicmap
+ CONVERSATION_PARENT_LOCATOR:	function() {return "ConParentLocator"},
+ CONTEXT_LOCATOR:	function() {return "ContextLocator"}, // for parent/child nodes
+
  //NODE TYPES
  BOOKMARK_NODE_TYPE:    function() {return "BookmarkNodeType"},
  CHALLENGE_TYPE:        function() {return "ChallengeNodeType"},
  ISSUE_TYPE:            function() {return "IssueNodeType"},
  EVIDENCE_TYPE:         function() {return "EvidenceNodeType"},
  CLAIM_TYPE:            function() {return "ClaimNodeType"},
+ DECISION_TYPE:         function() {return "DecisionNodeType"},
  RESOURCE_TYPE:         function() {return "ResourceNodeType"},
  GUILD_TYPE:            function() {return "GuildNodeType"},
  QUEST_TYPE:            function() {return "QuestNodeType"},

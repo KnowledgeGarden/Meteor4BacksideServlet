@@ -1,6 +1,28 @@
 <Template name="conversation">
   <div id="wrap">
-  <h2>Conversation</h2>
-</div>
-{{> footer}}
+    {{#with myConversation}}
+    <div class="col-xs-8 col-sm-8">
+      <h2>Conversation View</h2>
+
+        <table class="table">
+          <tr>
+            <td><img src='/images/ibis/map.png' ></td>
+            <td><h2>{{label}}</h2></td>
+          </tr>
+        </table>
+        <div class="body pre-scrollable span12" style="border: 1px solid #e1e1e8; resize:both;overflow: auto;">
+          {{details}}
+        </div>
+
+    </div>
+    <!-- sidebars -->
+    <div class="col-xs-4 col-sm-4">
+      {{> tagPivot}}
+      {{> userPivot}}
+      {{> docPivot}}
+  <!--    {{> transcludePivot}} -->
+    </div> <!-- /col 4 -->
+    {{/with}}
+  </div>
+  {{> footer}}
 </Template>

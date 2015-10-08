@@ -1,5 +1,5 @@
 # Meteor4BacksideServlet #
-A basic shell project for communicating with [BacksideServlet](BacksideServlet "https://github.com/KnowledgeGarden/BacksideServlet")
+A basic shell project for communicating with [BacksideServletKS](BacksideServletKS "https://github.com/KnowledgeGarden/BacksideServletKS")
 
 Meteor has its own internal protocol, DDP.<br/>
 BacksideServlet has its own unnamed (eventually to be blended with some REST standard) protocol.<br/>

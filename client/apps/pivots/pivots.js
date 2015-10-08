@@ -29,13 +29,8 @@ function pluckPivots (pivotList, nodeTypeList) {
 }
 
 Template.tagPivot.helpers ({
-  isAppropriate: function() {
-    var x = Session.get('SessionTopic');
-    var y = x.inOf;
-    var truth = ('T' === Session.get('isAuthenticated') &&
-            y === 'BookmarkNodeType');
-    console.log("TagPivotIsAppropriate "+y+" "+truth+" "+Session.get('isAuthenticated'));
-    return truth;
+  isAuthenticated: function() {
+    return Session.get('isAuthenticated');
   },
 
   url: function() {
@@ -71,6 +66,7 @@ Template.docPivot.helpers ({
     console.log('DocPivot '+JSON.stringify(x));
     return x;
   }
+
 });
 
 Template.userPivot.helpers ({

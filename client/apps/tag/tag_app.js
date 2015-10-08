@@ -19,6 +19,7 @@
      if (!error) {
        try {
          t = t.data.cargo;
+         Session.set('MyTopic', t);
        } catch (err) {console.log("DANG!"); t = res;}
      }
      console.log("TS99 "+error+" "+JSON.stringify(t));
@@ -53,14 +54,16 @@ Template.tags.created = function() {
   wrappedListTags(0, NUM_ITEMS, function(err, rslt) {
     console.log("LIST_TAGS "+err+" "+ rslt);
     if (rslt)
-      console.log(JSON.stringify(rslt.cargo));
+      console.log('TAGS '+JSON.stringify(rslt.cargo));
+    Session.set('TagIndex', rslt.cargo);
   });
 }
 
 Template.tags.helpers({
   tags: function() {
-    console.log("FiringListTags ");
-      return Topics.findOne('ListTags');
+    console.log("FiringListTags "+JSON.stringify(Session.get('TagIndex')));
+    //  return Topics.findOne('ListTags');
+    return Session.get('TagIndex');
   }
 });
 Template.tagForm.created = function() {
@@ -125,7 +128,8 @@ Template.tag.created = function() {
 Template.tag.helpers({
   myTag: function() {
     console.log('FiringMyTag');
-    return Topics.findOne(Session.get('TagId'));
+    return Session.get('MyTopic');
+    //return Topics.findOne(Session.get('TagId'));
   }
 
 });

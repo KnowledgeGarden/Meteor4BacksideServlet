@@ -25,6 +25,7 @@ function clientGrabTopic(locator, userId, userIP, sToken, callback) {
     if (!error) {
       try {
         t = t.data.cargo;
+        Session.set('MyTopic', t);
       } catch (err) {console.log("DANG!"); t = res;}
     }
     console.log("TS99 "+error+" "+JSON.stringify(t));
@@ -38,6 +39,7 @@ Template.users.created = function() {
   wrappedListUsers(0, NUM_ITEMS, function(err, rslt) {
     console.log("LIST_USERS "+err+" "+ rslt);
     console.log(JSON.stringify(rslt.cargo));
+    Session.set('ListUsers', rslt.cargo);
   });
 };
 
@@ -52,7 +54,7 @@ Template.userview.created = function() {
 }
 Template.userview.helpers({
   myUser: function() {
-    return Topics.findOne(Session.get('UserTopicId'));
+    return Session.get('MyTopic');
   }
 });
 
@@ -62,9 +64,7 @@ Template.users.helpers({
   // but that list must be fetched; waiting for the fetch
   // kills the event
   tmusers: function() {
-    var x = Meteor.call('LIST_USERS');
-    console.log("FiringTMUsers "+x);
-      return Topics.findOne('ListUsers');
+    return Session.get('ListUsers');
   }
 
 });

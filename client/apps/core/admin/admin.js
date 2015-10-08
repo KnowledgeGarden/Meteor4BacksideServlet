@@ -179,7 +179,19 @@ Template.register.created = function() {
 
 };
 
+//Template.landingPage.created = function() {
+//};
+
 Template.login.helpers({
+/*  errorMessage: function(field) {
+    console.log("ERRORMESSAGE "+field);
+    return Session.get('topicsErrors')[field];
+  },
+  errorClass: function (field) {
+    console.log("ERRORCLASS "+field);
+    return !!Session.get('topicSubmitErrors')[field] ? 'has-error' : '';
+  }
+*/
 });
 
 Template.register.helpers({
@@ -196,7 +208,6 @@ Template.register.helpers({
     return (Session.get('InviteOnly') === 'T');
   }
 });
-
 Template.register.events({
   'submit .validate': function(e, template) {
     e.preventDefault();

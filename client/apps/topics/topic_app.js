@@ -42,6 +42,7 @@ function clientGrabTopic(locator, userId, userIP, sToken, callback) {
     if (!error) {
       try {
         t = t.data.cargo;
+        Session.set('MyTopic', t);
       } catch (err) {console.log("DANG!"); t = res;}
     }
     console.log("TS99 "+error+" "+JSON.stringify(t));
@@ -62,7 +63,8 @@ Template.topic.created = function() {
 
 Template.topic.helpers({
   myTopic: function() {
-    return Topics.findOne(Session.get('TopicId'));
+  //  return Topics.findOne(Session.get('TopicId'));
+    return Session.get('MyTopic');
   }
 
 });
