@@ -63,19 +63,6 @@ function signup(email, fullName, handle, password, avatar,
 
 var wrappedSignup = Meteor.wrapAsync(signup);
 
-function signout(email, callback) {
-  console.log("SIGNING OUT "+email);
-  Meteor.call('logoutUser', email, function(err, rslt){
-    console.log("SIGNED OUT+ "+err+" "+rslt);
-    try {
-      Session.clearPersistent();
-    } catch (x) {}
-    return callback(err, rslt);
-  });
-}
-
-var wrappedSignout = Meteor.wrapAsync(signout);
-
 function newInvite(email, callback) {
   console.log("NewInvite "+email);
   Meteor.call('createInvite', email, function(err, rslt){
@@ -96,6 +83,11 @@ function deleteInvite(email, callback) {
 
 var wrappedDeleteInvite = Meteor.wrapAsync(deleteInvite);
 
+/**
+ * Fetch a user from the User Database (not the topic map)
+ * @param email
+ * @param callback
+ */
 function getUser(email, callback) {
   console.log("GetUser "+email);
   Meteor.call('fetchUser', email, function(err, rslt){
@@ -105,6 +97,24 @@ function getUser(email, callback) {
 }
 
 var wrappedGetUser = Meteor.wrapAsync(getUser);
+
+function changeEmail(userId, newEmail, callback) {
+  Meteor.call('changeUserEmail', userId, newEmail, function(err, rslt) {
+    console.log("ChangedEmail "+err+" | "+rslt);
+    return callback(err, rslt);
+  });
+}
+
+var wrappedChangeEmail = Meteor.wrapAsync(changeEmail);
+
+function changePassword(userId, newPassword, callback) {
+  Meteor.call('changeUserPassword', userId, newPassword, function(err, rslt) {
+    console.log("ChangedPassword "+err+" | "+rslt);
+    return callback(err, rslt);
+  });
+}
+
+var wrappedChangePassword = Meteor.wrapAsync(changePassword);
 
 function changeRoles(userId, roles, callback) {
   console.log("ChangeRoles "+roles);
@@ -157,12 +167,12 @@ Template.login.created = function() {
 Template.logout.helpers({
   logout:  function() {
     console.log("LOGGINGOUT");
-    wrappedSignout(Session.get('uEmail'), function(err, rslt) {
-      console.log("DONELOGGINGOUT "+err+" "+rslt);
-      Session.set('uEmail', null);
-      handleAuthenticated(false);
-      Router.go('/');
-    });
+    Session.set('uEmail', null);
+    try {
+      Session.clearPersistent();
+    } catch (x) {}
+    handleAuthenticated(false);
+    Router.go('/');
   }
 });
 
@@ -328,6 +338,7 @@ Template.login.events({
           Session.setPersistent('sToken', rslt.rToken);
           Session.setPersistent('uEmail', email);
           Session.setPersistent('userId', rslt.cargo.uName);
+          Session.setPersistent('MyUser', rslt.cargo);
           $emx.val('');
           $pwx.val('');
           Router.go('/');
@@ -340,13 +351,68 @@ Template.login.events({
   }
 });
 
+////////////////////////////////////////
+// Theoretically speaking, when a user authenticates, that
+// is when we capture that user object and stash it in
+// session 'MyUser' together with Session 'uEmail'
+//  A user looks like this:
+// {"rMsg":"ok","rToken":"","cargo":{"uGeoloc":"|","uEmail":"joe@sixpack.com",
+// "uHomepage":"","uName":"joe","uFullName":"Joe Sixpack","uRole":"rur","uAvatar":""}}
+////////////////////////////////////////
+
+//profile.html
 Template.userprofile.helpers({
+  //TODO lots more support required
 
   fullName: function() {
-    var email = Session.get('uEmail');
-    var ux = Users.findOne(email);
-    console.log("PROFILEFULLNAME "+email+" "+ux);
+    var ux = Session.get('MyUser');
+    console.log("PROFILEFULLNAME "+JSON.stringify(ux));
     return ux.uFullName;
+  },
+  email: function() {
+    return Session.get('uEmail');
+  },
+  homepage: function() {
+    return ""; //TODO
+  },
+  latitude: function() {
+    return ""; //TODO
+  },
+  longitude: function() {
+    return ""; //TODO
+  }
+
+
+});
+
+Template.userprofile.events({
+  'submit .changeEmail': function(e, template) {
+    e.preventDefault();
+    var $uEmail = $(e.target).find('[name=uEmail]');
+    var email = $uEmail.val();
+    $uEmail.val('');
+
+    console.log("Changing Email "+email);
+    wrappedChangeEmail(Session.get('userId'), email, function(err, rslt) {
+      console.log("ChgdEmail "+JSON.stringify(rslt));
+      var x = Session.get('MyUser');
+      x.uEmail = email;
+      Session.setPersistent('MyUser'. x);
+      Session.setPersistent('uEmail', email);
+      Router.go('/userprofile');
+    });
+  },
+  'submit .changePwd': function(e, template) {
+    e.preventDefault();
+    var $uPwd = $(e.target).find('[name=password]');
+    var pwd = $uPwd.val();
+    $uPwd.val('');
+
+    console.log("Changing Password ");
+    wrappedChangePassword(Session.get('userId'), pwd, function(err, rslt) {
+      console.log("ChgdPWD "+JSON.stringify(rslt));
+      Router.go('/userprofile');
+    });
   }
 
 });

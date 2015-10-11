@@ -54,18 +54,6 @@ function doCall(method, urx, jsonQuery, options, callback) {
         rx = rslt.data;
         if (rx) {
           console.log("DOCALL3 "+jsonQuery.verb+"|"+JSON.stringify(rx));
-          // if this is a login, must persist the user's data
-          try {
-            if (jsonQuery.verb === Meteor.call('AUTHENTICATE')) {
-              var x = rx.cargo;
-              x._id = x.uEmail;
-              console.log("ISAUTHENTICATE "+JSON.stringify(x));
-              console.log("FOO "+rx.cargo.uEmail);
-
-              Users.insert(x);
-              console.log("SavedUser "+JSON.stringify(rx.cargo));
-            }
-          } catch (err) {}
         }
       }
       return callback(err, rx);
@@ -95,27 +83,12 @@ Meteor.methods ({
     console.log("LOGIN "+userEmail);
     var x = {};
     x._id=userEmail;
-    //first remove the user if already there
-    Users.remove(x);
-    //TODO
     //NOTE that if login fails at wrappedCall, there is an exception tossed
     // and stack trace right here, even though Call actually ran and returned
     // an error message, etc.
     return wrappedCall("GET", urx, query, options);
     // what the auth looks like to BacksideServlet
     // Basic am9lQHNpeHBhY2suY29tOmpvZQ==
-  },
-
-  logoutUser: function(userEmail) {
-    console.log("LOGGING OUT "+userEmail);
-    Users.remove(userEmail);
-  },
-
-  /**
-   * Clear every user from local collection
-   */
-  clearDatabase: function() {
-    Users.remove({});
   },
 
   /**
@@ -253,7 +226,9 @@ Meteor.methods ({
         options = {};
     return wrappedCall("POST", urx, query, options);
   },
-
+///////////////////////////////
+// User Profile
+///////////////////////////////
   /**
    * for users
    */
@@ -261,20 +236,26 @@ Meteor.methods ({
     var urx = 'admin/',
         verb = Meteor.call('UPDATE_EMAIL'),
         query = Meteor.call('getCoreQuery', verb, userId, '', null);
-        uery.uEmail = newEmail;
+        query.uEmail = newEmail;
         options = {};
     return wrappedCall("POST", urx, query, options);
   },
 
-  changeUserPassword: function(userId, userEmail, oldPwd, newPwd) {
-    var urx = 'admin/',
+  changeUserPassword: function(userId, newPwd) {
+    var urx = 'user/',
         verb = Meteor.call('UPDATE_PASSWORD'),
         query = Meteor.call('getCoreQuery', verb, userId, '', null);
-        query.uPwd = oldPwd;
-        query.uNewPwd = newPwd;
-        query.uEmail = userEmail;
+        query.uPwd = btoa(newPwd);
         options = {};
-    return wrappedCall("GET", urx, query, options);
+    return wrappedCall("POST", urx, query, options);
+  },
+
+  changeUserHomepage: function(userId, newURL) {
+
+  },
+
+  changeUserGeolocation: function(userId, newLatitude, newLongitude) {
+
   }
 
 });

@@ -1,9 +1,45 @@
 <Template name="userprofile">
-  <h1>Profile</h1>
-  <table class="table">
-    <tr>
-      <td><img src='/images/person.png' ></td>
-      <td><h2>{{fullName}}</h2></td>
-    </tr>
-  </table>
+  <div class="col-sm-6 col-sm-offset-3">
+    <h1>Profile</h1>
+    <table class="table">
+      <tr>
+        <td><img src='/images/person.png' ></td>
+        <td><h2>{{fullName}}</h2></td>
+      </tr>
+    </table>
+    <form name="changeEmail" class="changeEmail">
+        <div class="form-group">
+            <label class="text-danger">Change Email</label>
+            <input type="text" class="form-control" name="uEmail" value='{{email}}'>
+            <button type="submit" class="btn btn-primary btn-lg">Change Email</button>
+        </div>
+    </form>
+    <hr/>
+    <form name="changeHomePage" class="changeHomePage">
+      <div class="form-group">
+          <label>Change Home Page URL</label>
+          <input type="text" class="form-control" name="homepage" value='{{homepage}}'>
+          <button type="submit" class="btn btn-primary btn-lg">Change Homepage</button>
+      </div>
+    </form>
+    <hr/>
+    <form name="changeGeoLoc" class="changeGeoLoc">
+      <div class="form-group">
+          <label>Change Latitude</label>
+          <input type="text" id="Latitude" class="form-control" name="Latitude" value="{{latitude}}">
+          <label>Change Longitude</label>
+          <input type="text" id="Longitude" class="form-control" name="Longitude" value="{{longitude}}">
+          <button type="submit" class="btn btn-primary btn-lg">Change GeoLocation</button>
+      </div>
+    </form>
+    <hr/>
+
+    <form name="changePwd" class="changePwd">
+        <div class="form-group">
+            <label>Change Password (Legal characters include #@$%*! and numbers and letters)</label>
+            <input type="password" class="form-control" name="password">
+            <button type="submit" class="btn btn-primary btn-lg">Change Password</button>
+        </div>
+    </form>
+  </div>
 </template>

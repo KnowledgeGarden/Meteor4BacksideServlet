@@ -11,6 +11,7 @@ Meteor.methods({
  NEW_SUBCLASS_TOPIC:    function() {return "NewSub"}, //topicmap
  NEW_CONVERSATION_NODE: function() {return "NewConvNode"},
  NEW_USER:              function() {return "NewUser"}, //userapp
+ FULL_TEXT_SEARCH:		  function() {return "FullTextSearch"}, //topicmap
  LIST_INSTANCE_TOPICS:  function() {return "ListInstances"}, //topicmap
  LIST_SUBCLASS_TOPICS:  function() {return "ListSubclasses"}, //topicmap
  LIST_USERS:            function() {return "ListUsers"}, //topicmap & userapp
